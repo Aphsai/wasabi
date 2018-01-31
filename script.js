@@ -7,10 +7,28 @@ window.onload = function createWorld() {
   window.addEventListener("keydown", keydown, false);
   const RUNNING_FRAMES = 12;
   const STANDING_FRAMES = 1;
+  const SPRITE_WIDTH = 300;
+  const SPRITE_HEIGHT = 300;
+
+  var LEFT = 37;
+  var RIGHT = 39;
+  var UP = 38;
+  var DOWN = 40;
+  var SPACE = 32;
+  var SHIFT = 16;
+
   var running = [];
   var standing = [];
   var frameCounter = 11;
+  var movingRight = false;
+  var movingLeft = false;
   var moving = false;
+  var facing_right = true;
+  var sprite_x = (canvas.width - SPRITE_WIDTH)/2;
+  var sprite_y = (canvas.height - SPRITE_HEIGHT)/2;
+
+  ct.translate(canvas.width/2 , canvas.height/2);
+
   for (var x = 0; x < RUNNING_FRAMES; x++) {
     running[x] = new Image();
     running[x].src = "Animations/Running" + (x + 1) + ".png";
@@ -21,29 +39,43 @@ window.onload = function createWorld() {
   }
   function clear() {
     ct.fillStyle = "#FFF";
-    ct.fillRect(0,0,canvas.width, canvas.height);
+    ct.fillRect(-canvas.width/2,-canvas.height/2,canvas.width * 2, canvas.height * 2);
   }
   function init() {}
   function keyup(e) {
+    movingLeft = false;
+    movingRight = false;
     moving = false;
-    frameCounter = 10;
   }
   function keydown(e) {
+    if(e.keyCode == LEFT) {
+      movingLeft = true;
+      if (facing_right) ct.scale(-1, 1);
+      facing_right = false;
+    }
+    else if (e.keyCode == RIGHT) {
+      movingRight = true;
+      if (!facing_right) ct.scale(-1, 1);
+      facing_right = true;
+    }
     moving = true;
-    frameCounter += 1;
-    frameCounter %= running.length;
   }
   function update() {
+    clear();
     draw();
   }
   function draw() {
-    clear();
-    if (moving)
-      ct.drawImage(running[frameCounter], 10, 10, 300, 300);
-    else
-      ct.drawImage(standing[0], 10, 10, 300, 300);
+    if (moving) {
+      frameCounter += 1;
+      frameCounter %= running.length;
+      ct.drawImage(running[frameCounter], -SPRITE_WIDTH/2, -SPRITE_HEIGHT/2, SPRITE_WIDTH, SPRITE_HEIGHT);
+    }
+    else {
+      frameCounter = 10;
+      ct.drawImage(standing[0], -SPRITE_WIDTH/2, -SPRITE_HEIGHT/2, SPRITE_WIDTH, SPRITE_HEIGHT);
+    }
   }
   running[11].onload = function() {
-    setInterval(update , 1000/60);
+    setInterval(update , 1000/30);
   }
 }
