@@ -24,9 +24,10 @@ window.onload = function createWorld() {
   var movingLeft = false;
   var moving = false;
   var facing_right = true;
-  var sprite_x = (canvas.width - SPRITE_WIDTH)/2;
-  var sprite_y = (canvas.height - SPRITE_HEIGHT)/2;
-
+  var sprite_x = -SPRITE_WIDTH/2;
+  var sprite_y = -SPRITE_HEIGHT/2;
+  var sprite_rel_x = 0;
+  var sprite_rel_x = 0;
   ct.translate(canvas.width/2 , canvas.height/2);
 
   for (var x = 0; x < RUNNING_FRAMES; x++) {
@@ -38,24 +39,36 @@ window.onload = function createWorld() {
     standing[x].src = "Animations/Standing" + (x + 1) + ".png";
   }
   function clear() {
-    ct.fillStyle = "#FFF";
-    ct.fillRect(-canvas.width/2,-canvas.height/2,canvas.width * 2, canvas.height * 2);
+    ct.fillStyle = "#d0cd89";
+    ct.fillRect(-canvas.width/2,-canvas.height/2, canvas.width * 2, canvas.height * 2);
+    ct.fillStyle = "#333";
+    ct.fillRect(-canvas.width/2, SPRITE_HEIGHT/2 - 5, canvas.width * 2, canvas.height);
   }
   function init() {}
   function keyup(e) {
+      if(e.keyCode == LEFT)
     movingLeft = false;
+      if(e.keyCode == RIGHT)
     movingRight = false;
-    moving = false;
   }
   function keydown(e) {
     if(e.keyCode == LEFT) {
       movingLeft = true;
-      if (facing_right) ct.scale(-1, 1);
+      if (facing_right) {
+        ct.scale(-1, 1);
+        sprite_rel_x *= -1;
+        sprite_rel_x -= 50;
+      }
       facing_right = false;
+
     }
     else if (e.keyCode == RIGHT) {
       movingRight = true;
-      if (!facing_right) ct.scale(-1, 1);
+      if (!facing_right) {
+        ct.scale(-1, 1);
+              sprite_rel_x *= -1;
+                    sprite_rel_x -= 50;
+      }
       facing_right = true;
     }
     moving = true;
@@ -65,14 +78,18 @@ window.onload = function createWorld() {
     draw();
   }
   function draw() {
-    if (moving) {
+    if (movingLeft) sprite_rel_x -= 10;
+    if (movingRight) sprite_rel_x -= 10;
+    ct.fillStyle = "#0b532e";
+    ct.fillRect(sprite_rel_x, 95, 50, 50);
+    if (moving && (movingLeft || movingRight)) {
       frameCounter += 1;
       frameCounter %= running.length;
-      ct.drawImage(running[frameCounter], -SPRITE_WIDTH/2, -SPRITE_HEIGHT/2, SPRITE_WIDTH, SPRITE_HEIGHT);
+      ct.drawImage(running[frameCounter], sprite_y, sprite_y, SPRITE_WIDTH, SPRITE_HEIGHT);
     }
     else {
       frameCounter = 10;
-      ct.drawImage(standing[0], -SPRITE_WIDTH/2, -SPRITE_HEIGHT/2, SPRITE_WIDTH, SPRITE_HEIGHT);
+      ct.drawImage(standing[0], sprite_x, sprite_y, SPRITE_WIDTH, SPRITE_HEIGHT);
     }
   }
   running[11].onload = function() {
