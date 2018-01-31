@@ -112,7 +112,7 @@ window.onload = function createWorld() {
       power += 1;
       sprite_rel_x -= 20;
       if (spinCounter >= spinning.length) spinCounter = 4;
-      ct.drawImage(spinning[spinCounter], sprite_x, sprite_y, SPRITE_WIDTH, SPRITE_HEIGHT);
+      ct.drawImage(spinning[spinCounter], sprite_x, sprite_y, SPRITE_WIDTH + 42, SPRITE_HEIGHT);
     }
     else {
       frameCounter = 10;
