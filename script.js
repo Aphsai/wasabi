@@ -9,6 +9,8 @@ window.onload = function createWorld() {
   const RUNNING_FRAMES = 12;
   const STANDING_FRAMES = 1;
   const SPINNING_FRAMES = 7;
+  const JUMPING_FRAMES = 7;
+
   const SPRITE_WIDTH = 300;
   const SPRITE_HEIGHT = 300;
 
@@ -22,18 +24,20 @@ window.onload = function createWorld() {
   var running = [];
   var standing = [];
   var spinning = [];
-
+  var jumping = [];
   var frameCounter = 11;
   var spinCounter = 0;
+  var jumpCounter = 0;
   var movingRight = false;
   var movingLeft = false;
+  var jump = false;
   var spin = false;
   var power = 0;
   var facing_right = true;
   var sprite_x = -SPRITE_WIDTH/2;
   var sprite_y = -SPRITE_HEIGHT/2;
   var sprite_rel_x = 0;
-  var sprite_rel_x = 0;
+  var sprite_rel_y = 0;
 
   ct.translate(canvas.width/2 , canvas.height/2);
 
@@ -49,11 +53,15 @@ window.onload = function createWorld() {
     standing[x] = new Image();
     standing[x].src = "Animations/Standing" + (x + 1) + ".png";
   }
+  for (var x = 0; x < JUMPING_FRAMES; x++) {
+    jumping[x] = new Image();
+    jumping[x].src = "Animations/Jumping" + (x + 1) + ".png";
+  }
   function clear() {
     ct.fillStyle = "#d0cd89";
-    ct.fillRect(-canvas.width/2,-canvas.height/2, canvas.width * 2, canvas.height * 2);
+    ct.fillRect(-canvas.width/2, -canvas.height/2, canvas.width * 2, canvas.height * 2);
     ct.fillStyle = "#333";
-    ct.fillRect(-canvas.width/2, SPRITE_HEIGHT/2 - 5, canvas.width * 2, canvas.height);
+    ct.fillRect(-canvas.width/2, sprite_rel_y + SPRITE_HEIGHT/2 - 5, canvas.width * 2, canvas.height);
   }
   function init() {}
   function keyup(e) {
@@ -92,6 +100,10 @@ window.onload = function createWorld() {
       movingRight = false;
       spin = true;
     }
+    if (e.keyCode == SPACE || e.keyCode == UP) {
+      console.log("ENTERED");
+      jump = true;
+    }
   }
   function update() {
     clear();
@@ -101,11 +113,23 @@ window.onload = function createWorld() {
     if (movingLeft) sprite_rel_x -= 10;
     if (movingRight) sprite_rel_x -= 10;
     ct.fillStyle = "#0b532e";
-    ct.fillRect(sprite_rel_x, 95, 50, 50);
+    ct.fillRect(sprite_rel_x, sprite_rel_y + 95, 50, 50);
     if (movingLeft || movingRight) {
       frameCounter += 1;
       frameCounter %= running.length;
       ct.drawImage(running[frameCounter], sprite_x, sprite_y, SPRITE_WIDTH, SPRITE_HEIGHT);
+    }
+    else if (jump) {
+      ct.drawImage(jumping[jumpCounter], sprite_x, sprite_y, SPRITE_WIDTH, SPRITE_HEIGHT);
+      jumpCounter++;
+      if (jumpCounter < JUMPING_FRAMES/2)
+      sprite_rel_y += 10;
+      else if (jumpCounter > JUMPING_FRAMES/2 + 1)
+      sprite_rel_y -= 10;
+      if (jumpCounter == JUMPING_FRAMES) {
+        jump = false;
+        jumpCounter = 0;
+      }
     }
     else if (spin) {
       spinCounter += 1;
@@ -120,6 +144,6 @@ window.onload = function createWorld() {
     }
   }
   running[11].onload = function() {
-    setInterval(update , 1000/30);
+    setInterval(update , 1000/20);
   }
 }
