@@ -9,7 +9,7 @@ window.onload = function createWorld() {
   const RUNNING_FRAMES = 12;
   const STANDING_FRAMES = 1;
   const SPINNING_FRAMES = 7;
-  const JUMPING_FRAMES = 7;
+  const JUMPING_FRAMES = 13;
 
   const SPRITE_WIDTH = 300;
   const SPRITE_HEIGHT = 300;
@@ -78,6 +78,7 @@ window.onload = function createWorld() {
   function keydown(e) {
     if(e.keyCode == LEFT) {
       movingLeft = true;
+      movingRight = false;
       if (facing_right) {
         ct.scale(-1, 1);
         sprite_rel_x *= -1;
@@ -87,6 +88,7 @@ window.onload = function createWorld() {
 
     }
     else if (e.keyCode == RIGHT) {
+      movingLeft = false;
       movingRight = true;
       if (!facing_right) {
         ct.scale(-1, 1);
@@ -100,7 +102,7 @@ window.onload = function createWorld() {
       movingRight = false;
       spin = true;
     }
-    if (e.keyCode == SPACE || e.keyCode == UP) {
+    if ((e.keyCode == SPACE || e.keyCode == UP)) {
       console.log("ENTERED");
       jump = true;
     }
@@ -114,22 +116,24 @@ window.onload = function createWorld() {
     if (movingRight) sprite_rel_x -= 10;
     ct.fillStyle = "#0b532e";
     ct.fillRect(sprite_rel_x, sprite_rel_y + 95, 50, 50);
-    if (movingLeft || movingRight) {
-      frameCounter += 1;
-      frameCounter %= running.length;
-      ct.drawImage(running[frameCounter], sprite_x, sprite_y, SPRITE_WIDTH, SPRITE_HEIGHT);
-    }
-    else if (jump) {
+    if (jump) {
       ct.drawImage(jumping[jumpCounter], sprite_x, sprite_y, SPRITE_WIDTH, SPRITE_HEIGHT);
       jumpCounter++;
-      if (jumpCounter < JUMPING_FRAMES/2)
-      sprite_rel_y += 10;
-      else if (jumpCounter > JUMPING_FRAMES/2 + 1)
-      sprite_rel_y -= 10;
+      if (jumpCounter < JUMPING_FRAMES/2 && jumpCounter > 1)
+      sprite_rel_y += 15;
+      else if (jumpCounter > JUMPING_FRAMES/2 + 2)
+      sprite_rel_y -= 15;
+      if (movingLeft || movingRight)
+              sprite_rel_x -= 10;
       if (jumpCounter == JUMPING_FRAMES) {
         jump = false;
         jumpCounter = 0;
       }
+    }
+    else if (movingLeft || movingRight) {
+      frameCounter += 1;
+      frameCounter %= running.length;
+      ct.drawImage(running[frameCounter], sprite_x, sprite_y, SPRITE_WIDTH, SPRITE_HEIGHT);
     }
     else if (spin) {
       spinCounter += 1;
