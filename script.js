@@ -25,6 +25,9 @@ window.onload = function createWorld() {
   var standing = [];
   var spinning = [];
   var jumping = [];
+
+  var tile;
+
   var frameCounter = 11;
   var spinCounter = 0;
   var jumpCounter = 0;
@@ -59,11 +62,17 @@ window.onload = function createWorld() {
     jumping[x] = new Image();
     jumping[x].src = "Animations/Jumping" + (x + 1) + ".png";
   }
+  tile = new Image();
+  tile.src = "Animations/Tile.png";
+
   function clear() {
     ct.fillStyle = "#d0cd89";
     ct.fillRect(-canvas.width/2, -canvas.height/2, canvas.width * 2, canvas.height * 2);
-    ct.fillStyle = "#333";
-    ct.fillRect(-canvas.width/2, sprite_rel_y + SPRITE_HEIGHT/2 - 5, canvas.width * 2, canvas.height);
+    ct.fillStyle = "#482c07";
+    ct.fillRect(-canvas.width/2, sprite_rel_y + SPRITE_HEIGHT/2  + 11, canvas.width * 2, canvas.height);
+    for (var x = 0; x < 200; x++) {
+      ct.drawImage(tile,sprite_rel_x -canvas.width/2 + x * 128 * 3, sprite_rel_y + SPRITE_HEIGHT/2 - 5, 32 * 4 * 3, 32 * 3);
+    }
   }
   function init() {}
   function keyup(e) {
@@ -126,8 +135,6 @@ window.onload = function createWorld() {
   function draw() {
     if (movingLeft) sprite_rel_x -= 10;
     if (movingRight) sprite_rel_x -= 10;
-    ct.fillStyle = "#0b532e";
-    ct.fillRect(sprite_rel_x, sprite_rel_y + 95, 50, 50);
     if (jump) {
       if (!spin)
       ct.drawImage(jumping[jumpCounter], sprite_x, sprite_y, SPRITE_WIDTH, SPRITE_HEIGHT);
