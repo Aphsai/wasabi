@@ -27,6 +27,7 @@ window.onload = function createWorld() {
   var jumping = [];
 
   var tile;
+  var stand;
 
   var frameCounter = 11;
   var spinCounter = 0;
@@ -64,16 +65,19 @@ window.onload = function createWorld() {
   }
   tile = new Image();
   tile.src = "Animations/Tile.png";
-
+  stand = new Image();
+  stand.src = "Animations/STAND3.png"
   function clear() {
     ct.fillStyle = "#d0cd89";
     ct.fillRect(-canvas.width/2, -canvas.height/2, canvas.width * 2, canvas.height * 2);
-    ct.fillStyle = "#482c07";
-    ct.fillRect(-canvas.width/2, sprite_rel_y + SPRITE_HEIGHT/2  + 11, canvas.width * 2, canvas.height);
+    // ct.fillStyle = "#482c07";
+    // ct.fillRect(-canvas.width/2, sprite_rel_y + SPRITE_HEIGHT/2  + 11, canvas.width * 2, canvas.height);
     for (var x = 0; x < 200; x++) {
+        ct.drawImage(stand, sprite_rel_x - canvas.width/2 + x * 160 * 6, sprite_rel_y + SPRITE_HEIGHT/2 + 70, 160 * 3, 338 * 3);
+    }
+    for (var x = 0; x < 200; x++)
       ct.drawImage(tile,sprite_rel_x -canvas.width/2 + x * 128 * 3, sprite_rel_y + SPRITE_HEIGHT/2 - 5, 32 * 4 * 3, 32 * 3);
     }
-  }
   function init() {}
   function keyup(e) {
       if(e.keyCode == LEFT) {
